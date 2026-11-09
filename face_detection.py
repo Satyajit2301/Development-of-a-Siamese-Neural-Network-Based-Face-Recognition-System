@@ -19,11 +19,31 @@ DEFAULT_MARGIN = 0.25             # extra context around the Haar box (fraction 
 def load_face_detector(cascade_path=None):
     """Load the pretrained Haar cascade XML file and return the classifier."""
     if cascade_path is None:
-        cascade_path = os.path.join(cv2.data.haarcascades,
-                                    "haarcascade_frontalface_default.xml")
-    detector = cv2.CascadeClassifier(cascade_path)
-    if detector.empty():
-        raise IOError(f"Could not load Haar cascade: {cascade_path}")
+        local_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  "haarcascade_frontalface_default.xml")
+        if os.path.exists(local_path):
+            cascade_path = local_path
+        elif hasattr(cv2, "data") and hasattr(cv2.data, "haarcascades"):
+            cascade_path = os.path.join(cv2.data.haarcascades,
+                                        "haarcascade_frontalface_default.xml")
+        else:
+            cascade_path = "haarcascade_frontalface_default.xml"
+
+    # Robustly resolve CascadeClassifier across various OpenCV builds and wrappers
+    classifier_cls = getattr(cv2, "CascadeClassifier", None)
+    if classifier_cls is None:
+        for sub in ["cv2", "objdetect", "_cv2"]:
+            mod = getattr(cv2, sub, None)
+            if mod is not None and hasattr(mod, "CascadeClassifier"):
+                classifier_cls = getattr(mod, "CascadeClassifier")
+                break
+
+    if classifier_cls is None:
+        raise AttributeError("OpenCV CascadeClassifier is not available in the current environment.")
+
+    detector = classifier_cls(cascade_path)
+    if detector is None or detector.empty():
+        raise IOError(f"Could not load Haar cascade from: {cascade_path}")
     return detector
 
 
@@ -43,6 +63,8 @@ def detect_faces(frame, detector, scale_factor=1.1, min_neighbors=5, min_size=(6
     list of (x, y, w, h) boxes sorted by area, largest face first.
     An empty list means that no face was found.
     """
+    if detector is None:
+        return []
     gray = to_gray(frame)
     boxes = detector.detectMultiScale(gray, scaleFactor=scale_factor,
                                       minNeighbors=min_neighbors, minSize=min_size)

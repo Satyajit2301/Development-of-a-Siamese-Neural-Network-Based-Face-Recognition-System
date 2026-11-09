@@ -3,6 +3,6 @@ tensorflow-cpu>=2.16.0
 keras>=3.0.0
 numpy
 pandas
-opencv-python-headless>=4.8
+opencv-contrib-python-headless>=4.8.0
 streamlit>=1.41
 

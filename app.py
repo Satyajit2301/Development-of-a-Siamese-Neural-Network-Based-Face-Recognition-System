@@ -416,7 +416,10 @@ DEFAULT_T = float(CFG.get("operating_threshold", CFG.get("threshold", 0.63)))
 def get_models():
     with st.spinner("⏳ Loading neural network models..."):
         embedder = onboarding.load_embedding_model()
-        detector = face_detection.load_face_detector()
+        try:
+            detector = face_detection.load_face_detector()
+        except Exception:
+            detector = None
     return embedder, detector
 
 

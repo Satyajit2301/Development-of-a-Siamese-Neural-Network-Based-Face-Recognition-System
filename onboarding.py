@@ -69,6 +69,13 @@ def enrol_from_frames(user_id, name, frames, embedder, detector, db, min_faces=M
 
     faces, crops = [], []
     for frame in frames:
+        if detector is None:
+            gray = face_detection.to_gray(frame)
+            crop = cv2.resize(gray, (face_detection.FACE_W, face_detection.FACE_H))
+            crops.append(crop)
+            faces.append(face_detection.preprocess_face(crop))
+            continue
+
         boxes = face_detection.detect_faces(frame, detector)
         if len(boxes) == 0:
             result["skipped_no_face"] += 1
