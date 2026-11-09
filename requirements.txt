@@ -1,0 +1,8 @@
+# App / inference requirements (versions of the Colab runtime the model was trained and saved with)
+tensorflow-cpu==2.21.0
+keras==3.13.2
+numpy
+pandas
+opencv-python-headless>=4.8
+streamlit>=1.41
+

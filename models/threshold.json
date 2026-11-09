@@ -1,0 +1,8 @@
+{
+  "threshold": 0.63,
+  "balanced_accuracy": 0.9598888888888889,
+  "roc_auc": 0.9839333333333333,
+  "selected_on": "all pairs of the 5 held-out identities",
+  "operating_threshold": 0.58,
+  "operating_threshold_note": "Default of the app slider. Chosen with TC10b (stricter threshold after TC10 failed at 0.63). 'threshold' is the value selected in the validation step and used in the webcam runs."
+}

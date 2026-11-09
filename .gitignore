@@ -1,0 +1,13 @@
+# real face images and embeddings (biometric data) must never be committed
+registered_users/
+# dataset (download it again, see README) and experiments
+dataset/
+models/aug/
+report_images/
+test_cases/tmp_db*/
+# python / notebook / secrets
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.streamlit/secrets.toml
+*.zip
